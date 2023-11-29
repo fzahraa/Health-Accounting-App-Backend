@@ -6,9 +6,23 @@ import { ShotRepository } from '../shot.repository';
 export default class DeleteShotUseCase {
   constructor(private shotRepository: ShotRepository) {}
 
-  async execute(id: number): Promise<string | null> {
-    const result = await this.shotRepository.delete(id);
+  async deleteShot(id: number): Promise<string | null> {
+    try{
+    const result = await this.shotRepository.deleteShot(id);
 
     return result;
+  } catch (error) {
+
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+  
+  }
   }
 }

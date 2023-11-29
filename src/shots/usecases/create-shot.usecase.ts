@@ -2,26 +2,50 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { AppException } from 'src/common/exception/app.exception';
 import { ShotRepository } from '../shot.repository';
 import { CreateShotDto } from '../dto/create-shot.dto';
+import { exceptions } from 'winston';
 
 @Injectable()
 export default class CreateShotUseCase {
   constructor(private shotRepository: ShotRepository) {}
 
-  async execute(createShotDto : CreateShotDto): Promise<string | null> {
-    try{
-      const result = await this.shotRepository.insert(createShotDto);
-      return result;
-    }catch (error) {
-      // Handle the exception
-      if (error instanceof AppException) {
-        console.error('Internal Error:', error.internalMessage);
+  async createShot(createShotDto : CreateShotDto): Promise<string | null> {
+    let codeExistsException = false;
+    try {
+      const codeExists = await this.shotRepository.findExistingShotCode(createShotDto.code);
+      if(codeExists){
+        codeExistsException = true;
+        throw exceptions;
       }
-      if (error.isOperational) {
-        console.error('Operational Error:', error.externalMessage);
-      } else {
-        console.error('Non-Operational Error:', error.externalMessage);
+      else{
+        const result = await this.shotRepository.insertShot(createShotDto);
+        return result;
       }
-      throw error;
+    } catch (error) {
+      // Log the error or handle it as needed
+      console.error('Error creating Shot:', error);
+
+      // We can use AppException here to create a custom exception
+      if(codeExistsException){
+        const appException = new AppException(
+          'Bad Request',
+          'Code Already Exists',
+          HttpStatus.BAD_REQUEST,
+          true,
+        );
+        // Throw the custom exception
+        throw appException;
+      }
+      else{
+        const appException = new AppException(
+          'Internal server error',
+          'An unexpected error occurred',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          true,
+        );
+
+        // Throw the custom exception
+        throw appException;
+      }
     }
   }
 }

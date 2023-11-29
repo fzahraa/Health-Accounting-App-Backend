@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import mysql, { RowDataPacket } from 'mysql2';
 import { PoolConnection } from 'mysql2/promise';
 import { PaginatedResult } from './database.types';
-import { Pool } from 'pg';
+import { Pool, QueryResult } from 'pg';
 import {
   generatePaginatedSql,
   generatePaginatedSqlGroupBy,
@@ -13,7 +13,7 @@ import {
 } from './database-options.type';
 
 @Injectable()
-export class XurpayDbService {
+export class DbService {
   private readonly pool: Pool;
 
   constructor(@Inject(DATABASE_CONFIG_OPTIONS) private options: DatabaseOptions,) {
@@ -61,7 +61,7 @@ export class XurpayDbService {
     return ret;
   }
 
-  // async query(sql: string, params?: any[] | null): Promise<RowDataPacket[]> {
+  // async executeNonQuery(sql: string, params?: any[] | null): Promise<RowDataPacket[]> {
   //   const promisePool = this.pool.promise();
   //   const con = await promisePool.getConnection();
   //   let retRows: RowDataPacket[];
@@ -77,42 +77,59 @@ export class XurpayDbService {
 
   //   return retRows;
   // }
-  async query(sql: string, params?: any[] | null): Promise<RowDataPacket[]> {
-    const client = await this.pool.connect();
+  // async executeNonQuery(sql: string, params?: any[] | null): Promise<RowDataPacket[]> {
+  //   const client = await this.pool.connect();
+  //   try {
+  //     const result = await client.executeNonQuery(sql, params);
+  //     console.log(result);
+  //     return result.rows as unknown as RowDataPacket[];
+  //   } catch (error) {
+  //     console.error('Error executing query:', error);
+  //     throw error;
+  //   } finally {
+  //     client.release();
+  //   }
+
+  // }
+  async executeNonQuery(sql: string, params?: any[] | null): Promise<void> {
+    const con = await this.pool.connect();
+  
     try {
-      const result = await client.query(sql, params);
-      console.log(result);
-      return result.rows as unknown as RowDataPacket[];
+      await con.query(sql, params);
     } catch (error) {
-      console.error('Error executing query:', error);
+      console.error('Error executing non-query:', error);
       throw error;
     } finally {
-      client.release();
+      con.release();
     }
-
   }
-
   async queryToModel<T>(
     type: new () => T,
     sql: string,
     params?: any[] | null,
   ): Promise<T[]> {
-    const promisePool = this.pool.promise();
-    const con = await promisePool.getConnection();
-    let retRows: RowDataPacket[];
-    await con
-      .execute(sql, params)
-      .then(([rows]) => {
-        retRows = rows as unknown as RowDataPacket[];
-      })
-      .catch((error) => {
-        throw error;
-      })
-      .finally(() => con.release());
-
-    const ret = this.mapToModel(type, retRows);
-
-    return ret;
+    const con = await this.pool.connect();
+  
+    try {
+      const result: QueryResult = await con.query(sql, params);
+  
+      // Check if the result has 'rows' property and it is an array
+      if (result.rows && Array.isArray(result.rows)) {
+        const retRows = result.rows as unknown as RowDataPacket[];
+        console.log(retRows);
+  
+        const ret = this.mapToModel(type, retRows);
+        return ret;
+      } else {
+        // Handle the case where the result does not have the expected structure
+        throw new Error('Unexpected result structure');
+      }
+    } catch (error) {
+      console.error('Error executing query:', error);
+      throw error;
+    } finally {
+      con.release();
+    }
   }
 
   async queryToModelPaginated<T>(
@@ -187,7 +204,7 @@ export class XurpayDbService {
         .finally(() => con.release());
     } else {
       await con
-        .query(sql, params)
+        .executeNonQuery(sql, params)
         .then(([rows]) => {
           ret = rows;
         })
@@ -210,39 +227,39 @@ export class XurpayDbService {
     return con;
   }
 
-  async executeTransaction(
-    con: PoolConnection,
-    sql: string,
-    params?: any[] | null,
-    bulk?: boolean | false,
-  ) {
-    let ret: any;
-    if (!bulk) {
-      await con
-        .execute(sql, params)
-        .then(([rows]) => {
-          ret = rows;
-        })
-        .catch((error) => {
-          con.rollback();
-          con.release();
-          throw error;
-        });
-    } else {
-      await con
-        .query(sql, params)
-        .then(([rows]) => {
-          ret = rows;
-        })
-        .catch((error) => {
-          con.rollback();
-          con.release();
-          throw error;
-        });
-    }
+  // async executeTransaction(
+  //   con: PoolConnection,
+  //   sql: string,
+  //   params?: any[] | null,
+  //   bulk?: boolean | false,
+  // ) {
+  //   let ret: any;
+  //   if (!bulk) {
+  //     await con
+  //       .execute(sql, params)
+  //       .then(([rows]) => {
+  //         ret = rows;
+  //       })
+  //       .catch((error) => {
+  //         con.rollback();
+  //         con.release();
+  //         throw error;
+  //       });
+  //   } else {
+  //     await con
+  //       .executeNonQuery(sql, params)
+  //       .then(([rows]) => {
+  //         ret = rows;
+  //       })
+  //       .catch((error) => {
+  //         con.rollback();
+  //         con.release();
+  //         throw error;
+  //       });
+  //   }
 
-    return ret;
-  }
+  //   return ret;
+  // }
 
   async commitTransactionConnection(con: PoolConnection) {
     await con

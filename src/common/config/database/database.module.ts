@@ -1,5 +1,5 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
-import { XurpayDbService } from './xurpay-db.service';
+import { DbService } from './db.service';
 import {
   DatabaseOptions,
   DATABASE_CONFIG_OPTIONS,
@@ -20,9 +20,9 @@ export class DatabaseModule {
           provide: DATABASE_CONFIG_OPTIONS,
           useValue: options,
         },
-        XurpayDbService,
+        DbService,
       ],
-      exports: [XurpayDbService],
+      exports: [DbService],
     };
   }
 
@@ -36,9 +36,9 @@ export class DatabaseModule {
           useFactory: options.useFactory,
           inject: options.inject,
         },
-        XurpayDbService,
+        DbService,
       ],
-      exports: [XurpayDbService],
+      exports: [DbService],
     };
   }
 }

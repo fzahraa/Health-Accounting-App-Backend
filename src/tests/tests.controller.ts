@@ -13,29 +13,30 @@ import {
   import DeleteTestsUseCase from './usecases/delete-tests.usecase';
   import { CreateTestsDto } from './dto/create-tests.dto';
   import { UpdateTestsDto } from './dto/update-tests.dto';
+import { ReadTestsDto } from './dto/read-tests.dto';
   
-  @Controller('shots')
+  @Controller('tests')
   export class TestsController {
     constructor(private getTestsUseCase: GetTestsUseCase, private createTestsUseCase: CreateTestsUseCase,
       private updateTestsUseCase: UpdateTeststUseCase, private deleteTestsUseCase: DeleteTestsUseCase){}
 
     @Get()
-    async get(): Promise<string> {
-      return this.getTestsUseCase.execute();
+    async get(): Promise<ReadTestsDto[]> {
+      return this.getTestsUseCase.getTests();
     }
 
     @Post()
     async post(@Body() createTestsDto: CreateTestsDto): Promise<string>{
       try {
-        return await this.createTestsUseCase.execute(createTestsDto);
+        return await this.createTestsUseCase.createTest(createTestsDto);
       } catch (error) {
-        return 'Error during insert:'  +  error;
+        return error;
       }
     }
     @Put(':id')
     async put(@Param('id') id: number, @Body() updateTestsDto: UpdateTestsDto): Promise<string>{
       try {
-        return await this.updateTestsUseCase.execute(id, updateTestsDto);
+        return await this.updateTestsUseCase.updateTest(id, updateTestsDto);
       } catch (error) {
         return 'Error during update:'  +  error;
       }
@@ -43,7 +44,7 @@ import {
     @Delete(':id')
     async deete(@Param('id') id: number): Promise<string>{
       try {
-        return await this.deleteTestsUseCase.execute(id);
+        return await this.deleteTestsUseCase.deleteTest(id);
       } catch (error) {
         return 'Error during delete:' +  error;
       }

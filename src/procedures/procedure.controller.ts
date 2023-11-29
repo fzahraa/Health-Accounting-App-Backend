@@ -13,6 +13,7 @@ import {
   import DeleteProcedureUseCase from './usecases/delete-procedure.usecase';
 import { CreateProcedureDto } from './dto/create-procedure.dto';
 import { UpdateProcedureDto } from './dto/update-procedure.dto';
+import { ReadProcedureDto } from './dto/read-procedures.dto';
   
   @Controller('procedure')
   export class ProcedureController {
@@ -20,22 +21,22 @@ import { UpdateProcedureDto } from './dto/update-procedure.dto';
       private updateProecdureUseCase: UpdateProcedureUseCase, private deleteProcedureUseCase: DeleteProcedureUseCase){}
 
     @Get()
-    async get(): Promise<string> {
-      return this.getProcedureUseCase.execute();
+    async get(): Promise<ReadProcedureDto[]> {
+      return this.getProcedureUseCase.getProcedures();
     }
 
     @Post()
     async post(@Body() createProcedureDto: CreateProcedureDto): Promise<string>{
       try {
-        return await this.createProcedureUseCase.execute(createProcedureDto);
+        return await this.createProcedureUseCase.createProcedure(createProcedureDto);
       } catch (error) {
-        return 'Error during insert:'  +  error;
+        return error;
       }
     }
     @Put(':id')
     async put(@Param('id') id: number, @Body() updateProcedureDto: UpdateProcedureDto): Promise<string>{
       try {
-        return await this.updateProecdureUseCase.execute(id, updateProcedureDto);
+        return await this.updateProecdureUseCase.updateProcedure(id, updateProcedureDto);
       } catch (error) {
         return 'Error during update:'  +  error;
       }
@@ -43,7 +44,7 @@ import { UpdateProcedureDto } from './dto/update-procedure.dto';
     @Delete(':id')
     async deete(@Param('id') id: number): Promise<string>{
       try {
-        return await this.deleteProcedureUseCase.execute(id);
+        return await this.deleteProcedureUseCase.deleteProcedure(id);
       } catch (error) {
         return 'Error during delete:' +  error;
       }

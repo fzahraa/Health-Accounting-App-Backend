@@ -6,9 +6,21 @@ import { XrayRepository } from '../xray.repository';
 export default class DeleteXrayUseCase {
   constructor(private xrayRepository: XrayRepository) {}
 
-  async execute(id: number): Promise<string | null> {
-    const result = await this.xrayRepository.delete(id);
+  async deleteXray(id: number): Promise<string | null> { 
+    try {
+      const result = await this.xrayRepository.deleteXray(id);
+      return result;
+    } catch (error) {
 
-    return result;
+      const appException = new AppException(
+        'Internal server error',
+        'An unexpected error occurred',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        true,
+      );
+
+      // Throw the custom exception
+      throw appException;
+    }
   }
 }

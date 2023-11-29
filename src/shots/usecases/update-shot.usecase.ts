@@ -7,8 +7,22 @@ import { UpdateShotDto } from '../dto/update-shot.dto';
 export default class UpdateShotUseCase {
   constructor(private shotRepository: ShotRepository) {}
 
-  async execute(id: number, updateShotDto : UpdateShotDto): Promise<string | null> {
-    const result = await this.shotRepository.update(id, updateShotDto);
+  async updateShot(id: number, updateShotDto : UpdateShotDto): Promise<string | null> {
+    try{
+    const result = await this.shotRepository.updateShot(id, updateShotDto);
     return result;
+  } catch (error) {
+
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+  
+  }
   }
 }

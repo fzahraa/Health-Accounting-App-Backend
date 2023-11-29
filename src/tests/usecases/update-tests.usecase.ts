@@ -7,8 +7,21 @@ import { UpdateTestsDto } from '../dto/update-tests.dto';
 export default class UpdateTestsUseCase {
   constructor(private testsRepository: TestsRepository) {}
 
-  async execute(id: number, updatetestsDto : UpdateTestsDto): Promise<string | null> {
-    const result = await this.testsRepository.update(id, updatetestsDto);
+  async updateTest(id: number, updatetestsDto : UpdateTestsDto): Promise<string | null> {
+    try{
+    const result = await this.testsRepository.updateTest(id, updatetestsDto);
     return result;
+  } catch (error) {
+
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+  }
   }
 }

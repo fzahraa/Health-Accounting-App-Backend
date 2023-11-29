@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { XurpayDbService } from 'src/common/config/database/xurpay-db.service';
+import { DbService } from 'src/common/config/database/db.service';
 
 @Injectable()
 export class HelloRepository {
-  constructor(private sqlDb: XurpayDbService) {}
+  constructor(private sqlDb: DbService) {}
   get(): string {
     return 'Hello World!';
   }

@@ -13,6 +13,7 @@ import {
   import DeleteXrayUseCase from './usecases/delete-xray.usecase';
   import { CreateXrayDto } from './dto/create-xray.dto';
   import { UpdateXrayDto } from './dto/update-xray.dto';
+import { ReadXrayDto } from './dto/read-xray.dto';
   
   @Controller('xrays')
   export class XrayController {
@@ -20,22 +21,27 @@ import {
       private updateXrayUseCase: UpdateXrayUseCase, private deleteXrayUseCase: DeleteXrayUseCase){}
 
     @Get()
-    async get(): Promise<string> {
-      return this.getXrayUseCase.execute();
+    async get(): Promise<ReadXrayDto[]> {
+      return this.getXrayUseCase.getXrays();
+    }
+
+    @Get(':id')
+    async getByID(@Param('id') id: number): Promise<ReadXrayDto[]> {
+      return this.getXrayUseCase.getXrayByID(id);
     }
 
     @Post()
-    async post(@Body() createXrayDto: CreateXrayDto): Promise<string>{
+    async addXray(@Body() createXrayDto: CreateXrayDto): Promise<string | null>{
       try {
-        return await this.createXrayUseCase.execute(createXrayDto);
+        return await this.createXrayUseCase.createXray(createXrayDto);
       } catch (error) {
-        return 'Error during insert:'  +  error;
+        return error;
       }
     }
     @Put(':id')
     async put(@Param('id') id: number, @Body() updateXrayDto: UpdateXrayDto): Promise<string>{
       try {
-        return await this.updateXrayUseCase.execute(id, updateXrayDto);
+        return await this.updateXrayUseCase.updateXrays(id, updateXrayDto);
       } catch (error) {
         return 'Error during update:'  +  error;
       }
@@ -43,7 +49,7 @@ import {
     @Delete(':id')
     async deete(@Param('id') id: number): Promise<string>{
       try {
-        return await this.deleteXrayUseCase.execute(id);
+        return await this.deleteXrayUseCase.deleteXray(id);
       } catch (error) {
         return 'Error during delete:' +  error;
       }

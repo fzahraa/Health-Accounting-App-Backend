@@ -7,8 +7,22 @@ import { UpdateProcedureDto } from '../dto/update-procedure.dto';
 export default class UpdateProcedureUseCase {
   constructor(private procedureRepository: ProcedureRepository) {}
 
-  async execute(id: number, updateProcedureDto : UpdateProcedureDto): Promise<string | null> {
-    const result = await this.procedureRepository.update(id, updateProcedureDto);
+  async updateProcedure(id: number, updateProcedureDto : UpdateProcedureDto): Promise<string | null> {
+    try{
+    const result = await this.procedureRepository.updateProcedure(id, updateProcedureDto);
     return result;
+  } catch (error) {
+
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+    }
+  
   }
 }

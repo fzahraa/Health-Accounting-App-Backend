@@ -1,14 +1,31 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AppException } from 'src/common/exception/app.exception';
 import { ProcedureRepository } from '../procedure.repository';
+import { ReadProcedureDto } from '../dto/read-procedures.dto';
 
 @Injectable()
 export default class GetProcedureUseCase {
+
   constructor(private procedureRepository: ProcedureRepository) {}
 
-  async execute(): Promise<string | null> {
-    const result = await this.procedureRepository.get();
+  async getProcedures(): Promise<ReadProcedureDto[]> {
+    try{
+    const result = await this.procedureRepository.getProcedures();
 
     return result;
+  } catch (error) {
+
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+  
+  
   }
+}
 }

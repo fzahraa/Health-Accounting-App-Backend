@@ -6,9 +6,22 @@ import { TestsRepository } from '../tests.repository';
 export default class DeleteTestsUseCase {
   constructor(private testsRepository: TestsRepository) {}
 
-  async execute(id: number): Promise<string | null> {
-    const result = await this.testsRepository.delete(id);
+  async deleteTest(id: number): Promise<string | null> {
+    try{
+    const result = await this.testsRepository.deleteTest(id);
 
     return result;
+  } catch (error) {
+
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+  }
   }
 }

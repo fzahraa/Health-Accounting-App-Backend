@@ -7,8 +7,21 @@ import { UpdateXrayDto } from '../dto/update-xray.dto';
 export default class UpdateXrayUseCase {
   constructor(private xrayRepository: XrayRepository) {}
 
-  async execute(id: number, updateXrayDto : UpdateXrayDto): Promise<string | null> {
-    const result = await this.xrayRepository.update(id, updateXrayDto);
-    return result;
+  async updateXrays(id: number, updateXrayDto : UpdateXrayDto): Promise<string | null> {
+    try {
+      const result = await this.xrayRepository.updateXray(id, updateXrayDto);
+      return result;
+    } catch (error) {
+
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+  }
   }
 }

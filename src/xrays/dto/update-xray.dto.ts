@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsNumber, IsString, isDate, isNumber } from 'class-validator';
+import {IsString} from 'class-validator';
 
 export class UpdateXrayDto {
     @IsString()

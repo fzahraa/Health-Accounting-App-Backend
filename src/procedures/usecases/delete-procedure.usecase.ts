@@ -6,9 +6,24 @@ import { ProcedureRepository } from '../procedure.repository';
 export default class DeleteProcedureUseCase {
   constructor(private procedureRepository: ProcedureRepository) {}
 
-  async execute(id: number): Promise<string | null> {
-    const result = await this.procedureRepository.delete(id);
+  async deleteProcedure(id: number): Promise<string | null> {
+    try{
+    const result = await this.procedureRepository.deleteProcedure(id);
 
     return result;
+  } catch (error) {
+
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+  
+  
   }
+}
 }
