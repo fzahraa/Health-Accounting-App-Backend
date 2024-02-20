@@ -1,15 +1,15 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AppException } from 'src/common/exception/app.exception';
-import { XrayRepository } from '../xray.repository';
-import { UpdateXrayDto } from '../dto/update-xray.dto';
+import { CategoryRepository } from '../category.repository';
+import { UpdateCategoryDto } from '../dto/update-category.dto';
 
 @Injectable()
-export default class UpdateXrayUseCase {
-  constructor(private xrayRepository: XrayRepository) {}
+export default class UpdateCategoryUseCase {
+  constructor(private categoryRepository: CategoryRepository) {}
 
-  async updateXrays(id: number, category_id: number, updateXrayDto : UpdateXrayDto): Promise<string | null> {
+  async updateCategorys(id: number, updateCategoryDto : UpdateCategoryDto): Promise<string | null> {
     try {
-      const result = await this.xrayRepository.updateXray(id, category_id, updateXrayDto);
+      const result = await this.categoryRepository.updateCategory(id, updateCategoryDto);
       return result;
     } catch (error) {
 

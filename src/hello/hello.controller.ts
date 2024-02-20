@@ -7,7 +7,6 @@ export class HelloController {
 
   @Get()
   async get(): Promise<string> {
-    console.log(" hii");
     return this.getHelloUseCase.execute();
   }
 }

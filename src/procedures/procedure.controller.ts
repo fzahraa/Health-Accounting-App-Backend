@@ -25,26 +25,32 @@ import { ReadProcedureDto } from './dto/read-procedures.dto';
       return this.getProcedureUseCase.getProcedures();
     }
 
+    @Get('getByCategoryID/:category_id')
+    async getByCategoryID(@Param('category_id') category_id: number): Promise<ReadProcedureDto[]> {
+      return this.getProcedureUseCase.getProceduresByCategoryID(category_id);
+    }
+
+
     @Post()
-    async post(@Body() createProcedureDto: CreateProcedureDto): Promise<string>{
+    async post(@Body() createProcedureDto: CreateProcedureDto[]): Promise<string>{
       try {
         return await this.createProcedureUseCase.createProcedure(createProcedureDto);
       } catch (error) {
         return error;
       }
     }
-    @Put(':id')
-    async put(@Param('id') id: number, @Body() updateProcedureDto: UpdateProcedureDto): Promise<string>{
+    @Put(':id/:category_id')
+    async put(@Param('id') id: number, @Param('category_id') category_id: number, @Body() updateProcedureDto: UpdateProcedureDto): Promise<string>{
       try {
-        return await this.updateProecdureUseCase.updateProcedure(id, updateProcedureDto);
+        return await this.updateProecdureUseCase.updateProcedure(id, category_id, updateProcedureDto);
       } catch (error) {
         return 'Error during update:'  +  error;
       }
     }
-    @Delete(':id')
-    async deete(@Param('id') id: number): Promise<string>{
+    @Delete(':id/:category_id')
+    async deete(@Param('id') id: number, @Param('category_id') category_id: number): Promise<string>{
       try {
-        return await this.deleteProcedureUseCase.deleteProcedure(id);
+        return await this.deleteProcedureUseCase.deleteProcedure(id, category_id);
       } catch (error) {
         return 'Error during delete:' +  error;
       }

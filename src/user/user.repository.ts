@@ -14,7 +14,6 @@ export class UserRepository {
   async get(): Promise<string> {
     const sql = 'SELECT * FROM user_det';
     const result = await this.Db.executeNonQuery(sql);
-    console.log(result);
     // Assuming we want to return the result as a JSON string
     const jsonString = JSON.stringify(result);
     return jsonString;
@@ -31,7 +30,6 @@ export class UserRepository {
     const sql = 'SELECT * FROM user_det where id = $1';
     const params = [id];
     const result = await this.Db.executeNonQuery(sql, params);
-    console.log(result);
     // Assuming we want to return the result as a JSON string
     const jsonString = JSON.stringify(result);
     return jsonString;

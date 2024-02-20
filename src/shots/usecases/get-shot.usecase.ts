@@ -25,4 +25,22 @@ export default class GetShotUseCase {
   
   }
 }
+async getShotsByCategoryID(category_id:number): Promise<ReadShotDto[]> {
+  try{
+  const result = await this.shotRepository.getShotsByCategoryID(category_id);
+  return result;
+} catch (error) {
+
+  const appException = new AppException(
+    'Internal server error',
+    'An unexpected error occurred',
+    HttpStatus.INTERNAL_SERVER_ERROR,
+    true,
+  );
+
+  // Throw the custom exception
+  throw appException;
+
+}
+}
 }

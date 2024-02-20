@@ -17,6 +17,18 @@ export class LabsRepository {
       throw error
     }
   }
+
+  async getLabsByCategoryID(category_id : number): Promise<ReadLabsDto[]> {
+    try{
+    const sql = 'SELECT * FROM labs_det where category_id = $1';
+    const params = [category_id];
+    const result = await this.Db.queryToModel(ReadLabsDto, sql, params);
+    return result;
+    }catch(error){
+      throw error
+    }
+  }
+
   async getLabsByID(id : number): Promise<ReadLabsDto[]> {
     try{
     const sql = 'SELECT * FROM labs_det where id = $1';
@@ -28,14 +40,27 @@ export class LabsRepository {
     }
   }
 
-  async insertLabs(createLabsDto: CreateLabsDto): Promise<string | null> {
-    const { name, price, code } = createLabsDto;
-    const sql = 'INSERT INTO labs_det ( name, price, code) VALUES ($1, $2, $3)';
-    const params = [name, price, code];
-
+  async insertLabs(createLabsDto: CreateLabsDto[]): Promise<string | null> {
     try {
+      if (createLabsDto.length === 0) {
+        return null; // Nothing to insert
+      }
+        const valuesPlaceholder = createLabsDto.map(
+        (_, index) => `($${index * 4 + 1}, $${index * 4 + 2}, $${index * 4 + 3}, $${index * 4 + 4})`
+      ).join(', ');
+  
+      const sql = `
+        INSERT INTO labs_det (name, price, code, category_id)
+        VALUES ${valuesPlaceholder}
+      `;
+  
+      const params = createLabsDto.flatMap(
+        ({ name, price, code, category_id }) => [name, price, code, category_id]
+      );
+  
       await this.Db.executeNonQuery(sql, params);
-      return 'Insert successful!';
+  
+      return 'Insert Successful';
     } catch (error) {
       throw error;
     }
@@ -53,10 +78,10 @@ export class LabsRepository {
     }
   }
 
-  async updateLabs(id: number, updateLabsDto: UpdateLabsDto): Promise<string | null> {
-    const { name, price, code } = updateLabsDto;
-    const sql = 'UPDATE labs_det SET name = $1, price = $2, code = $3 where id = $4';
-    const params = [name, price, code, id];
+  async updateLabs(id: number, category_id:number, updateLabsDto: UpdateLabsDto): Promise<string | null> {
+    const { name, price, code } = updateLabsDto[0];
+    const sql = 'UPDATE labs_det SET name = $1, price = $2, code = $3 where id = $4 and category_id = $5';
+    const params = [name, price, code, id, category_id];
 
     try {
       await this.Db.executeNonQuery(sql, params);
@@ -66,9 +91,9 @@ export class LabsRepository {
     }
   }
 
-  async deleteLabs(id : number): Promise<string | null> {
-    const sql = 'DELETE FROM labs_det WHERE id = $1';
-    const params = [id];
+  async deleteLabs(id : number, category_id:number): Promise<string | null> {
+    const sql = 'DELETE FROM labs_det WHERE id = $1 and category_id = $2';
+    const params = [id, category_id];
 
     try {
       await this.Db.executeNonQuery(sql, params);

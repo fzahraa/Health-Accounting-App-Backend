@@ -29,27 +29,33 @@ import { ReadShotDto } from './dto/read-shot.dto';
       return this.getShotUseCase.getShots();
     }
 
+    @Get('getByCategoryID/:category_id')
+    async getByCategoryID(@Param('category_id') category_id: number): Promise<ReadShotDto[]> {
+      return this.getShotUseCase.getShotsByCategoryID(category_id);
+    }
+
+
     @Post()
-    async post(@Body() createShotDto: CreateShotDto): Promise<string | null>{
+    async post(@Body() createShotDto: CreateShotDto[]): Promise<string | null>{
       try {
         return await this.createShotUseCase.createShot(createShotDto);
       } catch (error) {
         return error;
       }
     }
-    @Put(':id')
-    async put(@Param('id') id: number, @Body() updateShotDto: UpdateShotDto): Promise<string>{
-      console.log(updateShotDto);
+    @Put(':id/:category_id')
+    async put(@Param('id') id: number, @Param('category_id') category_id: number, @Body() updateShotDto: UpdateShotDto): Promise<string>{
       try {
-        return await this.updateShotUseCase.updateShot(id, updateShotDto);
+        return await this.updateShotUseCase.updateShot(id, category_id, updateShotDto);
       } catch (error) {
         return 'Error during update:'  +  error;
       }
     }
-    @Delete(':id')
-    async deete(@Param('id') id: number): Promise<string>{
+    @Delete(':id/:category_id')
+    async deete(@Param('id') id: number,
+    @Param('category_id') category_id: number): Promise<string>{
       try {
-        return await this.deleteShotUseCase.deleteShot(id);
+        return await this.deleteShotUseCase.deleteShot(id, category_id);
       } catch (error) {
         return 'Error during delete:' +  error;
       }

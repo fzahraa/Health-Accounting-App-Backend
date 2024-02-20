@@ -9,4 +9,7 @@ export class UpdateShotDto {
   
     @IsString()
     code: string;
+
+    @IsNumber()
+    category_id: number = 0;
 }

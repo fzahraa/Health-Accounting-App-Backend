@@ -1,10 +1,10 @@
-import {IsString} from 'class-validator';
+import {IsNumber, IsString} from 'class-validator';
 
 export class UpdateXrayDto {
     @IsString()
     name: string;
   
-    @IsString()
+    @IsNumber()
     price: number;
   
     @IsString()

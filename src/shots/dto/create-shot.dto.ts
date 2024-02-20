@@ -9,5 +9,8 @@ export class CreateShotDto {
   
     @IsString()
     code: string;
+
+    @IsNumber()
+    category_id: number = 0;
 }
 

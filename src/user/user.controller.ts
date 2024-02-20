@@ -33,7 +33,6 @@ export class UserController {
   //sign up
   @Post('/signUp')
   async store(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
-    console.log(createUserDto);
     if (
       createUserDto.email != null &&
       createUserDto.password != null &&

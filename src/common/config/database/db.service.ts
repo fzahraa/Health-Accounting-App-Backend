@@ -93,7 +93,6 @@ export class DbService {
   // }
   async executeNonQuery(sql: string, params?: any[] | null): Promise<void> {
     const con = await this.pool.connect();
-  
     try {
       await con.query(sql, params);
     } catch (error) {
@@ -116,7 +115,6 @@ export class DbService {
       // Check if the result has 'rows' property and it is an array
       if (result.rows && Array.isArray(result.rows)) {
         const retRows = result.rows as unknown as RowDataPacket[];
-        console.log(retRows);
   
         const ret = this.mapToModel(type, retRows);
         return ret;

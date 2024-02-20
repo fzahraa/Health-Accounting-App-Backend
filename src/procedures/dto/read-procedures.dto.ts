@@ -4,4 +4,5 @@ export class ReadProcedureDto {
     name: string;
     price: number;
     code: string;
+    category_id: number;
   }

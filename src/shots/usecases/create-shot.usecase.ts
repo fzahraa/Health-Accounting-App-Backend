@@ -8,34 +8,13 @@ import { exceptions } from 'winston';
 export default class CreateShotUseCase {
   constructor(private shotRepository: ShotRepository) {}
 
-  async createShot(createShotDto : CreateShotDto): Promise<string | null> {
-    let codeExistsException = false;
+  async createShot(createShotDto : CreateShotDto[]): Promise<string | null> {
     try {
-      const codeExists = await this.shotRepository.findExistingShotCode(createShotDto.code);
-      if(codeExists){
-        codeExistsException = true;
-        throw exceptions;
-      }
-      else{
         const result = await this.shotRepository.insertShot(createShotDto);
         return result;
-      }
     } catch (error) {
       // Log the error or handle it as needed
       console.error('Error creating Shot:', error);
-
-      // We can use AppException here to create a custom exception
-      if(codeExistsException){
-        const appException = new AppException(
-          'Bad Request',
-          'Code Already Exists',
-          HttpStatus.BAD_REQUEST,
-          true,
-        );
-        // Throw the custom exception
-        throw appException;
-      }
-      else{
         const appException = new AppException(
           'Internal server error',
           'An unexpected error occurred',
@@ -45,7 +24,6 @@ export default class CreateShotUseCase {
 
         // Throw the custom exception
         throw appException;
-      }
     }
   }
 }

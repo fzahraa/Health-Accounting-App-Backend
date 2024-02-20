@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AppException } from 'src/common/exception/app.exception';
-import { XrayRepository } from '../xray.repository';
+import { CategoryRepository } from '../category.repository';
 
 @Injectable()
-export default class DeleteXrayUseCase {
-  constructor(private xrayRepository: XrayRepository) {}
+export default class DeleteCategoryUseCase {
+  constructor(private categoryRepository: CategoryRepository) {}
 
-  async deleteXray(id: number, category_id: number): Promise<string | null> { 
+  async deleteCategory(id: number): Promise<string | null> { 
     try {
-      const result = await this.xrayRepository.deleteXray(id, category_id);
+      const result = await this.categoryRepository.deleteCategory(id);
       return result;
     } catch (error) {
 

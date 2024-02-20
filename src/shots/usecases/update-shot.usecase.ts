@@ -7,9 +7,9 @@ import { UpdateShotDto } from '../dto/update-shot.dto';
 export default class UpdateShotUseCase {
   constructor(private shotRepository: ShotRepository) {}
 
-  async updateShot(id: number, updateShotDto : UpdateShotDto): Promise<string | null> {
+  async updateShot(id: number, category_id: number, updateShotDto : UpdateShotDto): Promise<string | null> {
     try{
-    const result = await this.shotRepository.updateShot(id, updateShotDto);
+    const result = await this.shotRepository.updateShot(id, category_id, updateShotDto);
     return result;
   } catch (error) {
 

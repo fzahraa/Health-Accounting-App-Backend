@@ -7,9 +7,9 @@ import { UpdateLabsDto } from '../dto/update-labs.dto';
 export default class UpdateLabsUseCase {
   constructor(private labsRepository: LabsRepository) {}
 
-  async updateLabs(id: number, updateLabsDto : UpdateLabsDto): Promise<string | null> {
+  async updateLabs(id: number, category_id:number, updateLabsDto : UpdateLabsDto): Promise<string | null> {
     try{
-    const result = await this.labsRepository.updateLabs(id, updateLabsDto);
+    const result = await this.labsRepository.updateLabs(id, category_id, updateLabsDto);
     return result;
   } catch (error) {
 

@@ -6,9 +6,9 @@ import { LabsRepository } from '../labs.repository';
 export default class DeleteLabsUseCase {
   constructor(private labsRepository: LabsRepository) {}
 
-  async deleteLabs(id: number): Promise<string | null> {
+  async deleteLabs(id: number, category_id:number): Promise<string | null> {
     try{
-    const result = await this.labsRepository.deleteLabs(id);
+    const result = await this.labsRepository.deleteLabs(id, category_id);
 
     return result;
   } catch (error) {

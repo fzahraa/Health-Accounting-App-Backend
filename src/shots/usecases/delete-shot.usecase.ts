@@ -6,9 +6,9 @@ import { ShotRepository } from '../shot.repository';
 export default class DeleteShotUseCase {
   constructor(private shotRepository: ShotRepository) {}
 
-  async deleteShot(id: number): Promise<string | null> {
+  async deleteShot(id: number, category_id: number): Promise<string | null> {
     try{
-    const result = await this.shotRepository.deleteShot(id);
+    const result = await this.shotRepository.deleteShot(id, category_id);
 
     return result;
   } catch (error) {

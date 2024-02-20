@@ -6,9 +6,9 @@ import { TestsRepository } from '../tests.repository';
 export default class DeleteTestsUseCase {
   constructor(private testsRepository: TestsRepository) {}
 
-  async deleteTest(id: number): Promise<string | null> {
+  async deleteTest(id: number, category_id:number): Promise<string | null> {
     try{
-    const result = await this.testsRepository.deleteTest(id);
+    const result = await this.testsRepository.deleteTest(id, category_id);
 
     return result;
   } catch (error) {

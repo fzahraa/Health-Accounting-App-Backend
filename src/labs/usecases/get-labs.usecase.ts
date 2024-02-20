@@ -27,4 +27,25 @@ export default class GetLabsUseCase {
   
   }
   }
+
+  async getLabsByCategoryID(category_id:number): Promise<ReadLabsDto[]> {
+    try{
+    const result = await this.labsRepository.getLabsByCategoryID(category_id);
+
+    return result;
+  } catch (error) {
+
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+  
+  
+  }
+  }
 }

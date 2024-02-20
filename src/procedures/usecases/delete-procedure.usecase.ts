@@ -6,9 +6,9 @@ import { ProcedureRepository } from '../procedure.repository';
 export default class DeleteProcedureUseCase {
   constructor(private procedureRepository: ProcedureRepository) {}
 
-  async deleteProcedure(id: number): Promise<string | null> {
+  async deleteProcedure(id: number, category_id:number): Promise<string | null> {
     try{
-    const result = await this.procedureRepository.deleteProcedure(id);
+    const result = await this.procedureRepository.deleteProcedure(id, category_id);
 
     return result;
   } catch (error) {

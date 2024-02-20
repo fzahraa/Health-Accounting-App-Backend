@@ -7,7 +7,24 @@ import { ReadTestsDto } from '../dto/read-tests.dto';
 @Injectable()
 export default class GetTestsUseCase {
   constructor(private testsRepository: TestsRepository) {}
+  
+  async getTestsByCategoryID(category_id:number): Promise<ReadTestsDto[]> {
+    try{
+    const result = await this.testsRepository.getTestsByCategoryID(category_id);
+    return result;
+  } catch (error) {
 
+    const appException = new AppException(
+      'Internal server error',
+      'An unexpected error occurred',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      true,
+    );
+
+    // Throw the custom exception
+    throw appException;
+  }
+  }
   async getTests(): Promise<ReadTestsDto[]> {
     try{
     const result = await this.testsRepository.getTests();

@@ -25,26 +25,34 @@ import { ReadTestsDto } from './dto/read-tests.dto';
       return this.getTestsUseCase.getTests();
     }
 
+    @Get('getByCategoryID/:category_id')
+    async getByCategoryID(@Param('category_id') category_id: number): Promise<ReadTestsDto[]> {
+      return this.getTestsUseCase.getTestsByCategoryID(category_id);
+    }
+
+
     @Post()
-    async post(@Body() createTestsDto: CreateTestsDto): Promise<string>{
+    async post(@Body() createTestsDto: CreateTestsDto[]): Promise<string>{
       try {
         return await this.createTestsUseCase.createTest(createTestsDto);
       } catch (error) {
         return error;
       }
     }
-    @Put(':id')
-    async put(@Param('id') id: number, @Body() updateTestsDto: UpdateTestsDto): Promise<string>{
+    @Put(':id/:category_id')
+    async put(@Param('id') id: number,
+    @Param('category_id') category_id: number, @Body() updateTestsDto: UpdateTestsDto): Promise<string>{
       try {
-        return await this.updateTestsUseCase.updateTest(id, updateTestsDto);
+        return await this.updateTestsUseCase.updateTest(id, category_id, updateTestsDto);
       } catch (error) {
         return 'Error during update:'  +  error;
       }
     }
-    @Delete(':id')
-    async deete(@Param('id') id: number): Promise<string>{
+    @Delete(':id/:category_id')
+    async deete(@Param('id') id: number,
+    @Param('category_id') category_id: number): Promise<string>{
       try {
-        return await this.deleteTestsUseCase.deleteTest(id);
+        return await this.deleteTestsUseCase.deleteTest(id, category_id);
       } catch (error) {
         return 'Error during delete:' +  error;
       }

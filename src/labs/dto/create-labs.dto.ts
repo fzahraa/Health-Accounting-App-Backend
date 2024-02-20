@@ -9,5 +9,8 @@ export class CreateLabsDto {
   
     @IsString()
     code: string;
+
+    @IsNumber()
+    category_id: number = 0;
 }
 

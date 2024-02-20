@@ -13,6 +13,7 @@ import { ProceduresModule } from './procedures/procedure.module';
 import { TestsModule } from './tests/tests.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { CategoryModule } from './category/category.module';
 
 const configValidationSchema = joi.object({
   NODE_ENV: joi
@@ -56,7 +57,8 @@ const configValidationSchema = joi.object({
     ProceduresModule,
     LabsModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    CategoryModule,    
   ],
   // providers: [
   //   {

@@ -30,26 +30,37 @@ import { ReadXrayDto } from './dto/read-xray.dto';
       return this.getXrayUseCase.getXrayByID(id);
     }
 
+    @Get('getByCategoryID/:category_id')
+    async getByCategoryID(@Param('category_id') category_id: number): Promise<ReadXrayDto[]> {
+      return this.getXrayUseCase.getXrayByCategoryID(category_id);
+    }
+
     @Post()
-    async addXray(@Body() createXrayDto: CreateXrayDto): Promise<string | null>{
+    async addXray(@Body() createXrayDto: CreateXrayDto[]): Promise<string | null>{
       try {
         return await this.createXrayUseCase.createXray(createXrayDto);
       } catch (error) {
         return error;
       }
     }
-    @Put(':id')
-    async put(@Param('id') id: number, @Body() updateXrayDto: UpdateXrayDto): Promise<string>{
+    @Put(':id/:category_id')
+    async put(
+      @Param('id') id: number,
+      @Param('category_id') category_id: number,
+      @Body() updateXrayDto: UpdateXrayDto
+    ): Promise<string> {
       try {
-        return await this.updateXrayUseCase.updateXrays(id, updateXrayDto);
+        return await this.updateXrayUseCase.updateXrays(id, category_id, updateXrayDto);
       } catch (error) {
-        return 'Error during update:'  +  error;
+        return 'Error during update: ' + error;
       }
     }
-    @Delete(':id')
-    async deete(@Param('id') id: number): Promise<string>{
+
+    @Delete(':id/:category_id')
+    async deete(@Param('id') id: number,
+    @Param('category_id') category_id: number): Promise<string>{
       try {
-        return await this.deleteXrayUseCase.deleteXray(id);
+        return await this.deleteXrayUseCase.deleteXray(id, category_id);
       } catch (error) {
         return 'Error during delete:' +  error;
       }

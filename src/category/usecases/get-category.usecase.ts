@@ -1,16 +1,16 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AppException } from 'src/common/exception/app.exception';
-import { XrayRepository } from '../xray.repository';
-import { CreateXrayDto } from '../dto/create-xray.dto';
-import { ReadXrayDto } from '../dto/read-xray.dto';
+import { CategoryRepository } from '../category.repository';
+import { CreateCategoryDto } from '../dto/create-category.dto';
+import { ReadCategoryDto } from '../dto/read-category.dto';
 
 @Injectable()
-export default class GetXrayUseCase {
-  constructor(private xrayRepository: XrayRepository) {}
+export default class GetCategoryUseCase {
+  constructor(private categoryRepository: CategoryRepository) {}
 
-  async getXrays(): Promise<ReadXrayDto[]> {
+  async getCategorys(): Promise<ReadCategoryDto[]> {
     try {
-      const result = await this.xrayRepository.getXrays();
+      const result = await this.categoryRepository.getCategories();
       return result;
     } catch (error) {
 
@@ -25,10 +25,10 @@ export default class GetXrayUseCase {
       throw appException;
     }
   }
-  
-  async getXrayByID(id : number): Promise<ReadXrayDto[]> {
+
+  async getAllCategoriesAndCharges(): Promise<ReadCategoryDto[]> {
     try {
-      const result = await this.xrayRepository.getXrayByID(id);
+      const result = await this.categoryRepository.getCategories();
       return result;
     } catch (error) {
 
@@ -43,9 +43,10 @@ export default class GetXrayUseCase {
       throw appException;
     }
   }
-  async getXrayByCategoryID(category_id : number): Promise<ReadXrayDto[]> {
+
+  async getCategoryByID(id : number): Promise<ReadCategoryDto[]> {
     try {
-      const result = await this.xrayRepository.getXrayByCategoryID(category_id);
+      const result = await this.categoryRepository.getCategoryByID(id);
       return result;
     } catch (error) {
 

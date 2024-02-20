@@ -4,4 +4,5 @@ export class ReadTestsDto {
     name: string;
     price: number;
     code: string;
+    category_id: number;
   }
